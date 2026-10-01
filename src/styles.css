@@ -144,6 +144,10 @@ button[aria-pressed="true"] {
   background: #f8fbfd;
 }
 
+.debug[hidden] {
+  display: none;
+}
+
 .debug div {
   display: flex;
   justify-content: space-between;
@@ -158,6 +162,38 @@ button[aria-pressed="true"] {
   margin: 0;
   font-variant-numeric: tabular-nums;
   font-weight: 800;
+}
+
+.controls-popover {
+  border: 1px solid #dde7ef;
+  border-radius: 8px;
+  background: #f8fbfd;
+  padding: 10px 12px;
+}
+
+.controls-popover summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.controls-popover ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #465970;
+}
+
+.fallback-panel {
+  display: grid;
+  min-height: 100vh;
+  place-content: center;
+  padding: 24px;
+  background: #f7fbff;
+  color: #18283a;
+  text-align: center;
+}
+
+.fallback-panel h1 {
+  margin: 0 0 8px;
 }
 
 @media (max-width: 820px) {

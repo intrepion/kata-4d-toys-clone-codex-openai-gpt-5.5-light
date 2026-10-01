@@ -10,6 +10,7 @@ test("player can change visible slices and rotate selected toys through XW", asy
 
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Starter Scene" })).toBeVisible();
+  await page.getByTestId("debug-toggle").click();
   await expect(page.getByTestId("visible-radius")).toHaveText("1.00");
 
   await page.getByTestId("w-slider").fill("0.8");
@@ -43,6 +44,12 @@ test("player can change visible slices and rotate selected toys through XW", asy
   await expect(page.getByTestId("selected-toy")).toHaveText("Duocylinder");
   await page.getByTestId("offset-slider").fill("0");
   await expect(page.getByTestId("visible-radius")).toHaveText("0.94");
+
+  await page.getByTestId("toss-selected").click();
+  await expect(page.getByTestId("visible-radius")).toHaveText("0.94");
+  await expect(page.getByTestId("debug-toggle")).toHaveText("Hide Debug");
+  await page.getByText("Controls").click();
+  await expect(page.getByText("Toss Selected demonstrates auto-return recovery.")).toBeVisible();
 
   expect(consoleErrors).toEqual([]);
 });

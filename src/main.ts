@@ -48,9 +48,20 @@ app.innerHTML = `
         <input id="offset-slider" data-testid="offset-slider" type="range" min="-0.8" max="0.8" value="0" step="0.05" />
       </label>
       <button id="rotate-xw" data-testid="rotate-xw" type="button">Rotate XW</button>
+      <button id="toss-selected" data-testid="toss-selected" type="button">Toss Selected</button>
       <button id="reset-selected" data-testid="reset-selected" type="button">Reset Selected</button>
       <button id="reset-scene" data-testid="reset-scene" type="button">Reset Scene</button>
-      <dl class="debug">
+      <details class="controls-popover">
+        <summary>Controls</summary>
+        <ul>
+          <li>Drag the Global W Slice to compare all toys.</li>
+          <li>Use Selected-Toy W Offset to inspect one toy.</li>
+          <li>Rotate XW turns the selected toy through the fourth axis.</li>
+          <li>Toss Selected demonstrates auto-return recovery.</li>
+        </ul>
+      </details>
+      <button id="debug-toggle" data-testid="debug-toggle" type="button" aria-expanded="false">Show Debug</button>
+      <dl class="debug" hidden>
         <div><dt>Selected toy</dt><dd data-testid="selected-toy">Hypersphere</dd></div>
         <div><dt>Visible scale</dt><dd data-testid="visible-radius">1.00</dd></div>
         <div><dt>State</dt><dd data-testid="slice-state">visible</dd></div>
@@ -71,8 +82,11 @@ const rotationOutput = document.querySelector<HTMLElement>("[data-testid='xw-rot
 const selectedOutput = document.querySelector<HTMLElement>("[data-testid='selected-toy']");
 const selectedLabel = document.querySelector<HTMLElement>("[data-testid='selected-label']");
 const rotateButton = document.querySelector<HTMLButtonElement>("#rotate-xw");
+const tossButton = document.querySelector<HTMLButtonElement>("#toss-selected");
 const resetSelectedButton = document.querySelector<HTMLButtonElement>("#reset-selected");
 const resetButton = document.querySelector<HTMLButtonElement>("#reset-scene");
+const debugToggle = document.querySelector<HTMLButtonElement>("#debug-toggle");
+const debugPanel = document.querySelector<HTMLElement>(".debug");
 const toyButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-toy]"));
 
 if (
@@ -87,10 +101,24 @@ if (
   !selectedOutput ||
   !selectedLabel ||
   !rotateButton ||
+  !tossButton ||
   !resetSelectedButton ||
-  !resetButton
+  !resetButton ||
+  !debugToggle ||
+  !debugPanel
 ) {
   throw new Error("Toybox controls are missing.");
+}
+
+const webglProbe = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+if (!webglProbe) {
+  app.innerHTML = `
+    <section class="fallback-panel" role="alert">
+      <h1>WebGL is required</h1>
+      <p>This 4D toybox needs WebGL to render and manipulate the starter scene.</p>
+    </section>
+  `;
+  throw new Error("WebGL is unavailable.");
 }
 
 const controls = {
@@ -105,8 +133,11 @@ const controls = {
   selectedOutput,
   selectedLabel,
   rotateButton,
+  tossButton,
   resetSelectedButton,
-  resetButton
+  resetButton,
+  debugToggle,
+  debugPanel
 };
 
 let globalW = 0;
@@ -246,9 +277,25 @@ function updateUi() {
 }
 
 function redraw() {
+  autoReturnOutOfBounds();
   toys.forEach(updateToy);
   updateUi();
   renderer.render(scene, camera);
+}
+
+function resetToy(toy: ToyState) {
+  toy.position = { ...toy.starter };
+  toy.wOffset = 0;
+  toy.rotation = 0;
+}
+
+function autoReturnOutOfBounds() {
+  toys.forEach((toy) => {
+    const distanceFromTable = Math.hypot(toy.position.x, toy.position.z);
+    if (distanceFromTable > 4.2) {
+      resetToy(toy);
+    }
+  });
 }
 
 toyButtons.forEach((button) => {
@@ -275,23 +322,32 @@ controls.rotateButton.addEventListener("click", () => {
   redraw();
 });
 
-controls.resetSelectedButton.addEventListener("click", () => {
+controls.tossButton.addEventListener("click", () => {
   const toy = selectedToy();
-  toy.position = { ...toy.starter };
-  toy.wOffset = 0;
-  toy.rotation = 0;
+  toy.position.x = 5.2;
+  toy.position.z = 3.4;
+  updateToy(toy);
+  renderer.render(scene, camera);
+  window.setTimeout(redraw, 650);
+});
+
+controls.resetSelectedButton.addEventListener("click", () => {
+  resetToy(selectedToy());
   redraw();
 });
 
 controls.resetButton.addEventListener("click", () => {
   globalW = 0;
   controls.wSlider.value = "0";
-  toys.forEach((toy) => {
-    toy.position = { ...toy.starter };
-    toy.wOffset = 0;
-    toy.rotation = 0;
-  });
+  toys.forEach(resetToy);
   redraw();
+});
+
+controls.debugToggle.addEventListener("click", () => {
+  const nextHidden = !controls.debugPanel.hidden;
+  controls.debugPanel.hidden = nextHidden;
+  controls.debugToggle.setAttribute("aria-expanded", String(!nextHidden));
+  controls.debugToggle.textContent = nextHidden ? "Show Debug" : "Hide Debug";
 });
 
 window.addEventListener("resize", () => {
