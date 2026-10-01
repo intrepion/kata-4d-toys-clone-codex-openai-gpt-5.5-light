@@ -20,6 +20,18 @@ _Avoid_: Mesh, model, prop
 The shared dimensional math model for 4D vectors, rotations, slicing, projections, and canonical toy definitions.
 _Avoid_: Per-toy math, rendering helpers
 
+**End-to-End Thin Slice**:
+The first implementation path that proves one toy, one W control, one rotation, and one browser geometry-change check before expanding the system.
+_Avoid_: Scaffold-only milestone, full-set first pass
+
+**First Passing Toy**:
+The initial toy used to prove the rendering, slicing, control, and verification pipeline before other toys are added.
+_Avoid_: Placeholder object, final toy set
+
+**Expansion Gate**:
+The rule that a new toy is added only after the previous toy has slice behavior coverage, ghost and slice rendering, selection feedback, and browser geometry-change evidence.
+_Avoid_: Feature batch, visual-only addition
+
 **Canonical Toy Definition**:
 The mathematically honest 4D definition of a toy before any visual tuning is applied for readability.
 _Avoid_: Approximate shape, art asset
@@ -123,6 +135,14 @@ _Avoid_: Nonblank check, screenshot smoke test
 **Pass-Before-Push Delivery**:
 The release rule that implementation work should only be committed and pushed after build, unit tests, browser interaction checks, console checks, and git alignment pass.
 _Avoid_: Best-effort push, known-broken delivery
+
+**Scope Freeze**:
+The implementation discipline that defers new feature ideas unless they unblock the agreed toy loop.
+_Avoid_: Feature drift, opportunistic polish
+
+**Milestone Commit**:
+A commit that captures a verified implementation step, such as the scaffolded thin slice, toy expansion, or final polish and verification.
+_Avoid_: Single giant commit, unverified checkpoint
 
 **Micro-Prompt**:
 A short contextual hint that appears when the player performs a meaningful dimensional action, such as changing the W slice, spawning a toy, or rotating through a 4D plane.
