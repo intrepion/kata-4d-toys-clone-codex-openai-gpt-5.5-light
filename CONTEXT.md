@@ -60,6 +60,10 @@ _Avoid_: Tool-only controls, drag-only controls
 A tabletop-style 3D scene where the player orbits, pans, and zooms around 4D toys instead of navigating a first-person room.
 _Avoid_: First-person room, fixed-stage viewer
 
+**Direct Toybox Entry**:
+The launch behavior where the app opens directly into the usable toybox instead of showing a title or start screen first.
+_Avoid_: Landing page, title screen
+
 **Mouse-First Controls**:
 The control style where grabbing, orbiting, zooming, and spawning are usable with the mouse as the primary input, with keyboard shortcuts treated as accelerators.
 _Avoid_: Keyboard-required controls, palette-only controls
@@ -83,6 +87,10 @@ _Avoid_: Build-only proof, screenshot-only proof
 **Clean Lab**:
 The visual style for the toybox: bright, readable, lightly playful, and focused on making shape changes easy to inspect.
 _Avoid_: Dark spectacle, sterile diagram, busy playroom
+
+**Code-Generated Asset**:
+A visual or interaction element produced from code-defined geometry, materials, or UI styling instead of imported bitmap or texture files.
+_Avoid_: Texture pack, external art asset
 
 **Starter Scene**:
 The deterministic initial toybox state that appears on load and after reset, without relying on saved player state.
@@ -112,6 +120,10 @@ _Avoid_: Snapshot expectation, visual guess
 A browser verification step that confirms a control action changes visible geometry or UI state in the expected direction, rather than merely proving the canvas is nonblank.
 _Avoid_: Nonblank check, screenshot smoke test
 
+**Pass-Before-Push Delivery**:
+The release rule that implementation work should only be committed and pushed after build, unit tests, browser interaction checks, console checks, and git alignment pass.
+_Avoid_: Best-effort push, known-broken delivery
+
 **Micro-Prompt**:
 A short contextual hint that appears when the player performs a meaningful dimensional action, such as changing the W slice, spawning a toy, or rotating through a 4D plane.
 _Avoid_: Tutorial, documentation overlay
@@ -119,6 +131,18 @@ _Avoid_: Tutorial, documentation overlay
 **Action-Type Prompt**:
 A micro-prompt that appears the first time each meaningful action category is used, rather than appearing constantly or only once globally.
 _Avoid_: Repeating hint, one-time tutorial
+
+**Controls Popover**:
+A compact in-app reference for mouse actions and keyboard accelerators, supported by tooltips rather than a tutorial wall.
+_Avoid_: Help page, onboarding screen
+
+**Hidden Debug Toggle**:
+A non-default control that exposes geometry and state values for verification without making debug data part of the normal toybox experience.
+_Avoid_: Always-visible inspector, no debug access
+
+**WebGL Fallback Panel**:
+A styled message shown when WebGL is unavailable, making clear that the toybox cannot run instead of presenting broken controls.
+_Avoid_: Browser error, static explanation page
 
 **5-Cell Simplex**:
 The UI name for the 4D simplex toy, chosen to be precise enough for mathematical readers and readable enough for new players.
