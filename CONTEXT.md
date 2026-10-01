@@ -32,6 +32,14 @@ _Avoid_: Wireframe decoration, aura
 The player's current position through the fourth spatial axis, used to reveal different visible slices of 4D toys.
 _Avoid_: Depth slider, timeline
 
+**Global W Slice**:
+The room-wide W position that changes the visible slice of every toy together.
+_Avoid_: Master depth, world slider
+
+**Selected-Toy W Offset**:
+A per-toy W adjustment layered on top of the global W slice so one toy can be inspected without losing room-wide comparison.
+_Avoid_: Private timeline, hidden offset
+
 **4D-Ish Consistency**:
 The design standard that W position and 4D orientation must affect visible size, disappearance, collision, and interaction in ways that feel spatially coherent, without requiring full 4D rigid-body simulation.
 _Avoid_: Fake 4D, full simulation
@@ -52,6 +60,10 @@ _Avoid_: Keyboard-required controls, palette-only controls
 A named two-axis plane through which a toy can rotate, including XY, XZ, YZ, XW, YW, and ZW.
 _Avoid_: Spin mode, tumble axis
 
+**Axis Gizmo**:
+A selected-toy visual aid that shows the relevant axes and rotation context for dimensional manipulation.
+_Avoid_: Decoration, compass
+
 **Slice-Aware Collision**:
 Collision behavior where a toy's physical presence and approximate size follow its visible slice, while exact mesh collision is not required.
 _Avoid_: Exact 4D collision, static collision
@@ -68,6 +80,18 @@ _Avoid_: Dark spectacle, sterile diagram, busy playroom
 The deterministic initial toybox state that appears on load and after reset, without relying on saved player state.
 _Avoid_: Persisted scene, previous session
 
+**Selected Reset**:
+A recovery action that restores only the selected toy while leaving the rest of the starter scene or player arrangement intact.
+_Avoid_: Undo, scene reset
+
+**Scene Reset**:
+A recovery action that restores the full deterministic starter scene.
+_Avoid_: Reload, selected reset
+
+**Ghost-Only Projection**:
+The vanished-slice state where a toy has no touchable visible slice at the current W position, but its ghost projection remains visible so the disappearance reads as dimensional behavior rather than a bug.
+_Avoid_: Hidden object, missing toy
+
 **Dimensional Invariant**:
 A testable math rule that should remain true across 4D vector, rotation, slicing, or projection operations.
 _Avoid_: Snapshot expectation, visual guess
@@ -75,3 +99,7 @@ _Avoid_: Snapshot expectation, visual guess
 **Micro-Prompt**:
 A short contextual hint that appears when the player performs a meaningful dimensional action, such as changing the W slice, spawning a toy, or rotating through a 4D plane.
 _Avoid_: Tutorial, documentation overlay
+
+**Action-Type Prompt**:
+A micro-prompt that appears the first time each meaningful action category is used, rather than appearing constantly or only once globally.
+_Avoid_: Repeating hint, one-time tutorial
