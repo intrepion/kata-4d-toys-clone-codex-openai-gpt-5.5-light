@@ -16,9 +16,17 @@ _Avoid_: Math demo, visualization-only clone
 An object with a higher-dimensional form whose visible 3D slice changes as its W position or orientation changes.
 _Avoid_: Mesh, model, prop
 
+**Geometry Core**:
+The shared dimensional math model for 4D vectors, rotations, slicing, projections, and canonical toy definitions.
+_Avoid_: Per-toy math, rendering helpers
+
 **Visible Slice**:
 The 3D cross-section of a 4D toy that the player can see and manipulate at the current W position.
 _Avoid_: Rendered object, projection mesh
+
+**Ghost Projection**:
+A translucent visual hint of the broader 4D form around the visible slice, used to suggest that the toy extends beyond what is currently touchable.
+_Avoid_: Wireframe decoration, aura
 
 **W Slice**:
 The player's current position through the fourth spatial axis, used to reveal different visible slices of 4D toys.
@@ -51,6 +59,18 @@ _Avoid_: Exact 4D collision, static collision
 **Interaction Evidence**:
 Browser-verified proof that the toy loop works, including rendering, spawning, W slicing, 4D rotation, grabbing, moving, resetting, and a clean console.
 _Avoid_: Build-only proof, screenshot-only proof
+
+**Clean Lab**:
+The visual style for the toybox: bright, readable, lightly playful, and focused on making shape changes easy to inspect.
+_Avoid_: Dark spectacle, sterile diagram, busy playroom
+
+**Starter Scene**:
+The deterministic initial toybox state that appears on load and after reset, without relying on saved player state.
+_Avoid_: Persisted scene, previous session
+
+**Dimensional Invariant**:
+A testable math rule that should remain true across 4D vector, rotation, slicing, or projection operations.
+_Avoid_: Snapshot expectation, visual guess
 
 **Micro-Prompt**:
 A short contextual hint that appears when the player performs a meaningful dimensional action, such as changing the W slice, spawning a toy, or rotating through a 4D plane.
