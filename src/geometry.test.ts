@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hypersphereSlice, rotate4, toySlice, type ToyKind } from "./geometry";
+import { hypersphereSlice, rotate4, rotationPlanes, toyDefinitions, toySlice, type ToyKind } from "./geometry";
 
 describe("Geometry Core", () => {
   it("slices a hypersphere using the independent radius formula", () => {
@@ -30,7 +30,7 @@ describe("Geometry Core", () => {
   it.each([
     ["hypersphere", 0, 1],
     ["tesseract", 0.5, 0.81],
-    ["simplex", 0.32, 0.69],
+    ["simplex", 0.32, 0.52],
     ["duocylinder", 0, 0.94]
   ] satisfies Array<[ToyKind, number, number]>)("%s returns a predictable visible slice", (toyKind, w, expectedScale) => {
     expect(toySlice(toyKind, w).kind).toBe("visible");
@@ -43,4 +43,15 @@ describe("Geometry Core", () => {
       expect(toySlice(toyKind, 1.5).kind).toBe("ghost-only");
     }
   );
+
+  it("defines canonical vertices and edges for polytope toys", () => {
+    expect(toyDefinitions.tesseract.vertices4).toHaveLength(16);
+    expect(toyDefinitions.tesseract.edges).toHaveLength(32);
+    expect(toyDefinitions.simplex.vertices4).toHaveLength(5);
+    expect(toyDefinitions.simplex.edges).toHaveLength(10);
+  });
+
+  it("exposes all six rotation planes for the toy controls", () => {
+    expect(rotationPlanes).toEqual(["XY", "XZ", "YZ", "XW", "YW", "ZW"]);
+  });
 });

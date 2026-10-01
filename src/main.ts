@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { clampW, rotate4, toySlice, type ToyKind, type Vec4 } from "./geometry";
+import { clampW, rotate4, rotationPlanes, toySlice, type RotationPlane, type ToyKind, type Vec4 } from "./geometry";
 import "./styles.css";
 
 type ToyState = {
@@ -9,7 +9,7 @@ type ToyState = {
   position: Vec4;
   starter: Vec4;
   wOffset: number;
-  rotationPlane: "XW";
+  rotationPlane: RotationPlane;
   rotation: number;
   visible: THREE.Object3D;
   ghost: THREE.Object3D;
@@ -47,7 +47,14 @@ app.innerHTML = `
         <span>Selected-Toy W Offset <output id="offset-output">0.00</output></span>
         <input id="offset-slider" data-testid="offset-slider" type="range" min="-0.8" max="0.8" value="0" step="0.05" />
       </label>
-      <button id="rotate-xw" data-testid="rotate-xw" type="button">Rotate XW</button>
+      <label>
+        <span>Rotation Plane</span>
+        <select id="rotation-plane" data-testid="rotation-plane">
+          ${rotationPlanes.map((plane) => `<option value="${plane}" ${plane === "XW" ? "selected" : ""}>${plane}</option>`).join("")}
+        </select>
+      </label>
+      <button id="rotate-xw" data-testid="rotate-xw" type="button">Rotate Plane</button>
+      <button id="spawn-selected" data-testid="spawn-selected" type="button">Spawn Selected</button>
       <button id="toss-selected" data-testid="toss-selected" type="button">Toss Selected</button>
       <button id="reset-selected" data-testid="reset-selected" type="button">Reset Selected</button>
       <button id="reset-scene" data-testid="reset-scene" type="button">Reset Scene</button>
@@ -56,7 +63,7 @@ app.innerHTML = `
         <ul>
           <li>Drag the Global W Slice to compare all toys.</li>
           <li>Use Selected-Toy W Offset to inspect one toy.</li>
-          <li>Rotate XW turns the selected toy through the fourth axis.</li>
+          <li>Rotation Plane chooses XY, XZ, YZ, XW, YW, or ZW before rotating.</li>
           <li>Toss Selected demonstrates auto-return recovery.</li>
         </ul>
       </details>
@@ -65,8 +72,10 @@ app.innerHTML = `
         <div><dt>Selected toy</dt><dd data-testid="selected-toy">Hypersphere</dd></div>
         <div><dt>Visible scale</dt><dd data-testid="visible-radius">1.00</dd></div>
         <div><dt>State</dt><dd data-testid="slice-state">visible</dd></div>
-        <div><dt>XW rotation</dt><dd data-testid="xw-rotation">0.00</dd></div>
+        <div><dt>Plane rotation</dt><dd data-testid="xw-rotation">0.00</dd></div>
+        <div><dt>Table position</dt><dd data-testid="toy-position">0.00, 0.00</dd></div>
       </dl>
+      <p class="hover-label" data-testid="hover-label" hidden></p>
     </aside>
   </section>
 `;
@@ -79,14 +88,18 @@ const offsetOutput = document.querySelector<HTMLOutputElement>("#offset-output")
 const radiusOutput = document.querySelector<HTMLElement>("[data-testid='visible-radius']");
 const stateOutput = document.querySelector<HTMLElement>("[data-testid='slice-state']");
 const rotationOutput = document.querySelector<HTMLElement>("[data-testid='xw-rotation']");
+const positionOutput = document.querySelector<HTMLElement>("[data-testid='toy-position']");
 const selectedOutput = document.querySelector<HTMLElement>("[data-testid='selected-toy']");
 const selectedLabel = document.querySelector<HTMLElement>("[data-testid='selected-label']");
+const rotationPlaneSelect = document.querySelector<HTMLSelectElement>("#rotation-plane");
 const rotateButton = document.querySelector<HTMLButtonElement>("#rotate-xw");
+const spawnButton = document.querySelector<HTMLButtonElement>("#spawn-selected");
 const tossButton = document.querySelector<HTMLButtonElement>("#toss-selected");
 const resetSelectedButton = document.querySelector<HTMLButtonElement>("#reset-selected");
 const resetButton = document.querySelector<HTMLButtonElement>("#reset-scene");
 const debugToggle = document.querySelector<HTMLButtonElement>("#debug-toggle");
 const debugPanel = document.querySelector<HTMLElement>(".debug");
+const hoverLabel = document.querySelector<HTMLElement>("[data-testid='hover-label']");
 const toyButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-toy]"));
 
 if (
@@ -98,14 +111,18 @@ if (
   !radiusOutput ||
   !stateOutput ||
   !rotationOutput ||
+  !positionOutput ||
   !selectedOutput ||
   !selectedLabel ||
+  !rotationPlaneSelect ||
   !rotateButton ||
+  !spawnButton ||
   !tossButton ||
   !resetSelectedButton ||
   !resetButton ||
   !debugToggle ||
-  !debugPanel
+  !debugPanel ||
+  !hoverLabel
 ) {
   throw new Error("Toybox controls are missing.");
 }
@@ -130,14 +147,18 @@ const controls = {
   radiusOutput,
   stateOutput,
   rotationOutput,
+  positionOutput,
   selectedOutput,
   selectedLabel,
+  rotationPlaneSelect,
   rotateButton,
+  spawnButton,
   tossButton,
   resetSelectedButton,
   resetButton,
   debugToggle,
-  debugPanel
+  debugPanel,
+  hoverLabel
 };
 
 let globalW = 0;
@@ -165,6 +186,12 @@ const axisLine = new THREE.Line(
   new THREE.LineBasicMaterial({ color: "#e15b64" })
 );
 scene.add(axisLine);
+
+const selectedOutline = new THREE.Mesh(
+  new THREE.SphereGeometry(0.78, 32, 16),
+  new THREE.MeshBasicMaterial({ color: "#1b4d89", transparent: true, opacity: 0.22, wireframe: true })
+);
+scene.add(selectedOutline);
 
 function solidMaterial(color: string) {
   return new THREE.MeshPhysicalMaterial({
@@ -265,10 +292,14 @@ function updateUi() {
   controls.radiusOutput.textContent = slice.scale.toFixed(2);
   controls.stateOutput.textContent = slice.kind;
   controls.rotationOutput.textContent = toy.rotation.toFixed(2);
+  controls.positionOutput.textContent = `${toy.position.x.toFixed(2)}, ${toy.position.z.toFixed(2)}`;
   controls.selectedOutput.textContent = toy.label;
   controls.selectedLabel.textContent = toy.label;
   controls.offsetSlider.value = toy.wOffset.toFixed(2);
+  controls.rotationPlaneSelect.value = toy.rotationPlane;
   axisLine.position.copy(toy.visible.position);
+  selectedOutline.position.copy(toy.visible.position);
+  selectedOutline.scale.setScalar(Math.max(1, slice.ghostScale * 1.1));
   document.body.dataset.sliceState = slice.kind;
   document.body.dataset.selectedToy = toy.id;
   toyButtons.forEach((button) => {
@@ -303,6 +334,13 @@ toyButtons.forEach((button) => {
     selectedId = button.dataset.toy ?? selectedId;
     redraw();
   });
+  button.addEventListener("mouseenter", () => {
+    controls.hoverLabel.hidden = false;
+    controls.hoverLabel.textContent = `Hover: ${button.textContent ?? ""}`;
+  });
+  button.addEventListener("mouseleave", () => {
+    controls.hoverLabel.hidden = true;
+  });
 });
 
 controls.wSlider.addEventListener("input", () => {
@@ -315,10 +353,28 @@ controls.offsetSlider.addEventListener("input", () => {
   redraw();
 });
 
+controls.rotationPlaneSelect.addEventListener("input", () => {
+  selectedToy().rotationPlane = controls.rotationPlaneSelect.value as RotationPlane;
+  redraw();
+});
+
 controls.rotateButton.addEventListener("click", () => {
   const toy = selectedToy();
   toy.position = rotate4(toy.position, toy.rotationPlane, Math.PI / 8);
   toy.rotation += Math.PI / 8;
+  redraw();
+});
+
+controls.spawnButton.addEventListener("click", () => {
+  const toy = selectedToy();
+  const spawned = makeToy(`${toy.kind}-${toys.length}`, toy.kind, toy.label, "#5ba7ff", {
+    x: toy.starter.x + 0.45,
+    y: 0,
+    z: toy.starter.z + 0.45,
+    w: 0
+  });
+  toys.push(spawned);
+  selectedId = spawned.id;
   redraw();
 });
 
@@ -348,6 +404,29 @@ controls.debugToggle.addEventListener("click", () => {
   controls.debugPanel.hidden = nextHidden;
   controls.debugToggle.setAttribute("aria-expanded", String(!nextHidden));
   controls.debugToggle.textContent = nextHidden ? "Show Debug" : "Hide Debug";
+});
+
+let dragStart: { x: number; y: number; toyX: number; toyZ: number } | null = null;
+
+controls.canvas.addEventListener("pointerdown", (event) => {
+  const toy = selectedToy();
+  dragStart = { x: event.clientX, y: event.clientY, toyX: toy.position.x, toyZ: toy.position.z };
+  controls.canvas.setPointerCapture(event.pointerId);
+});
+
+controls.canvas.addEventListener("pointermove", (event) => {
+  if (!dragStart) {
+    return;
+  }
+  const toy = selectedToy();
+  toy.position.x = dragStart.toyX + (event.clientX - dragStart.x) / 120;
+  toy.position.z = dragStart.toyZ + (event.clientY - dragStart.y) / 120;
+  redraw();
+});
+
+controls.canvas.addEventListener("pointerup", (event) => {
+  dragStart = null;
+  controls.canvas.releasePointerCapture(event.pointerId);
 });
 
 window.addEventListener("resize", () => {
