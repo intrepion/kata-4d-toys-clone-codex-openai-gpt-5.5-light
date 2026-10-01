@@ -20,6 +20,14 @@ _Avoid_: Mesh, model, prop
 The shared dimensional math model for 4D vectors, rotations, slicing, projections, and canonical toy definitions.
 _Avoid_: Per-toy math, rendering helpers
 
+**Canonical Toy Definition**:
+The mathematically honest 4D definition of a toy before any visual tuning is applied for readability.
+_Avoid_: Approximate shape, art asset
+
+**Readability-Tuned Rendering**:
+Visual treatment that adjusts thickness, material, color, or ghost presentation while preserving the toy's canonical dimensional behavior.
+_Avoid_: Fake geometry, decorative styling
+
 **Visible Slice**:
 The 3D cross-section of a 4D toy that the player can see and manipulate at the current W position.
 _Avoid_: Rendered object, projection mesh
@@ -92,9 +100,17 @@ _Avoid_: Reload, selected reset
 The vanished-slice state where a toy has no touchable visible slice at the current W position, but its ghost projection remains visible so the disappearance reads as dimensional behavior rather than a bug.
 _Avoid_: Hidden object, missing toy
 
+**Auto-Return**:
+A recovery behavior where a toy that leaves the useful play area is allowed to fall or drift briefly, then returns to the table automatically.
+_Avoid_: Clamp, deletion
+
 **Dimensional Invariant**:
 A testable math rule that should remain true across 4D vector, rotation, slicing, or projection operations.
 _Avoid_: Snapshot expectation, visual guess
+
+**Geometry-Change Check**:
+A browser verification step that confirms a control action changes visible geometry or UI state in the expected direction, rather than merely proving the canvas is nonblank.
+_Avoid_: Nonblank check, screenshot smoke test
 
 **Micro-Prompt**:
 A short contextual hint that appears when the player performs a meaningful dimensional action, such as changing the W slice, spawning a toy, or rotating through a 4D plane.
@@ -103,3 +119,19 @@ _Avoid_: Tutorial, documentation overlay
 **Action-Type Prompt**:
 A micro-prompt that appears the first time each meaningful action category is used, rather than appearing constantly or only once globally.
 _Avoid_: Repeating hint, one-time tutorial
+
+**5-Cell Simplex**:
+The UI name for the 4D simplex toy, chosen to be precise enough for mathematical readers and readable enough for new players.
+_Avoid_: Simplex, 4-simplex
+
+**Wire/Solid Tesseract**:
+The tesseract presentation where solid visible cells are paired with ghosted edges so the toy reads as a higher-dimensional cube instead of a changing box.
+_Avoid_: Plain cube, wireframe-only tesseract
+
+**Radius-Changing Hypersphere**:
+The hypersphere presentation where the visible slice is a true sphere whose radius changes with W position, supported by a subtle ghost shell.
+_Avoid_: Glowing blob, fixed sphere
+
+**Hybrid Duocylinder**:
+The duocylinder presentation where the slice is math-derived and the ghost is stylized enough to make the unfamiliar form readable.
+_Avoid_: Torus proxy, literal-only duocylinder
