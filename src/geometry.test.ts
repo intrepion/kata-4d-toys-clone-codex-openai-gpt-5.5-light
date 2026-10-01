@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hypersphereSlice, rotate4 } from "./geometry";
+import { hypersphereSlice, rotate4, toySlice, type ToyKind } from "./geometry";
 
 describe("Geometry Core", () => {
   it("slices a hypersphere using the independent radius formula", () => {
@@ -26,4 +26,21 @@ describe("Geometry Core", () => {
     expect(rotated.w).toBeCloseTo(1);
     expect(length).toBeCloseTo(Math.hypot(1, 2, 3, 4));
   });
+
+  it.each([
+    ["hypersphere", 0, 1],
+    ["tesseract", 0.5, 0.81],
+    ["simplex", 0.32, 0.69],
+    ["duocylinder", 0, 0.94]
+  ] satisfies Array<[ToyKind, number, number]>)("%s returns a predictable visible slice", (toyKind, w, expectedScale) => {
+    expect(toySlice(toyKind, w).kind).toBe("visible");
+    expect(toySlice(toyKind, w).scale).toBeCloseTo(expectedScale);
+  });
+
+  it.each(["hypersphere", "tesseract", "simplex", "duocylinder"] satisfies ToyKind[])(
+    "%s becomes ghost-only outside its readable slice",
+    (toyKind) => {
+      expect(toySlice(toyKind, 1.5).kind).toBe("ghost-only");
+    }
+  );
 });
