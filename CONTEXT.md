@@ -32,6 +32,26 @@ _Avoid_: Fake 4D, full simulation
 The interaction model where direct mouse grabbing is the default, and explicit tools provide precise 4D rotation, W slicing, freezing, and resetting.
 _Avoid_: Tool-only controls, drag-only controls
 
+**Orbit-Camera Lab**:
+A tabletop-style 3D scene where the player orbits, pans, and zooms around 4D toys instead of navigating a first-person room.
+_Avoid_: First-person room, fixed-stage viewer
+
+**Mouse-First Controls**:
+The control style where grabbing, orbiting, zooming, and spawning are usable with the mouse as the primary input, with keyboard shortcuts treated as accelerators.
+_Avoid_: Keyboard-required controls, palette-only controls
+
+**Rotation Plane**:
+A named two-axis plane through which a toy can rotate, including XY, XZ, YZ, XW, YW, and ZW.
+_Avoid_: Spin mode, tumble axis
+
+**Slice-Aware Collision**:
+Collision behavior where a toy's physical presence and approximate size follow its visible slice, while exact mesh collision is not required.
+_Avoid_: Exact 4D collision, static collision
+
+**Interaction Evidence**:
+Browser-verified proof that the toy loop works, including rendering, spawning, W slicing, 4D rotation, grabbing, moving, resetting, and a clean console.
+_Avoid_: Build-only proof, screenshot-only proof
+
 **Micro-Prompt**:
 A short contextual hint that appears when the player performs a meaningful dimensional action, such as changing the W slice, spawning a toy, or rotating through a 4D plane.
 _Avoid_: Tutorial, documentation overlay
