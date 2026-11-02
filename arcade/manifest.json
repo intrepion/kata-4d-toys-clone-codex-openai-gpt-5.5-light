@@ -1,6 +1,47 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "gameId": "kata-4d-toys-clone-codex-openai-gpt-5.5-light",
   "playUrl": "https://intrepion.github.io/kata-4d-toys-clone-codex-openai-gpt-5.5-light/",
-  "screenshots": []
+  "screenshots": [
+    {
+      "path": "arcade/screenshots/ci-20261102-01.jpg",
+      "sha256": "916ba271c9a3af6eec3664c3b752f15efe6ead324e8a67ff558ef1ba0b53c8f9",
+      "alt": "4D Toybox gameplay, view 1",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-01.png",
+        "sourceSha256": "9100b0fd2a4bd85e7453ddf96903440752ff81ca4aed0b78d8d74ada828f5077",
+        "captureCommit": "9ff3740d4ef9b965ebb0c2817088d129f39fbb44",
+        "workflowRunId": "41394097414",
+        "inputHashes": {
+          "index.html": "e555ad552475fb4d3d65c41227d7dfb5b3fdee726a993cbb8d68963deea45df9",
+          "game.css": "6e6e136831487c57948eb4e0e1d263e62e48ce8e7a4ab9c8d1b367672bb5ec50",
+          "game.js": "90d5cf3317946e2f246f887037b82b772045c731937b35eac04968db74628094"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "b75a20c0687d7430fe2e2b55a639fe63729967918e80f51f7cba8cb302324886"
+      }
+    },
+    {
+      "path": "arcade/screenshots/ci-20261102-02.jpg",
+      "sha256": "ea87edf5d9f7bace09e40a3e7bd3b0ea0e0c13badd7f3ff26fea687d422ec267",
+      "alt": "4D Toybox gameplay, view 2",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-02.png",
+        "sourceSha256": "24390cdba696eb73bf18addbba21efd6877f94f7ca3ca3f2e1486d3ad322a652",
+        "captureCommit": "9ff3740d4ef9b965ebb0c2817088d129f39fbb44",
+        "workflowRunId": "41394097414",
+        "inputHashes": {
+          "index.html": "e555ad552475fb4d3d65c41227d7dfb5b3fdee726a993cbb8d68963deea45df9",
+          "game.css": "6e6e136831487c57948eb4e0e1d263e62e48ce8e7a4ab9c8d1b367672bb5ec50",
+          "game.js": "90d5cf3317946e2f246f887037b82b772045c731937b35eac04968db74628094"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "b75a20c0687d7430fe2e2b55a639fe63729967918e80f51f7cba8cb302324886"
+      }
+    }
+  ]
 }

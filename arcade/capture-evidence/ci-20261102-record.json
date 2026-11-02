@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "workflowCommit": "499e434243465ad96f43456f7e91e2b03db93368",
+  "sourceCommit": "9ff3740d4ef9b965ebb0c2817088d129f39fbb44",
+  "runId": "41394097414",
+  "url": "http://127.0.0.1:4198/",
+  "inputs": {
+    "index.html": "e555ad552475fb4d3d65c41227d7dfb5b3fdee726a993cbb8d68963deea45df9",
+    "game.css": "6e6e136831487c57948eb4e0e1d263e62e48ce8e7a4ab9c8d1b367672bb5ec50",
+    "game.js": "90d5cf3317946e2f246f887037b82b772045c731937b35eac04968db74628094"
+  },
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "screenshots": [
+    "toybox-01.png",
+    "toybox-02.png"
+  ]
+}
