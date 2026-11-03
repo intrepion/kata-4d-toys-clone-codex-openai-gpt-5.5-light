@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.55.1",
-    "@types/node": "^26.6.3",
+    "@types/node": "^24.19.2",
     "@types/three": "^0.187.0",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2",
